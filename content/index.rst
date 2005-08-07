@@ -11,6 +11,15 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+6 August 2005
+    For the last few months, Psyco has been hosted on http://codespeak.net in a `Subversion repository@http://codespeak.net/svn/psyco/dist`.  However, Psyco has not been in very active development for quite a while now.  I consider that the project is as complete as it can reasonably be.  Developing it further would be possible and interesting, but require much more efforts that I want to invest.  The future of Psyco now lies in the `PyPy@http://codespeak.net/pypy` project, which according to plan will provide a good base for a Python interpreter with better and well-integrated Psyco-like techniques as soon as 2006.  (Additionally, it is not impossible that we could even derive a C extension module for CPython very similar to today's Psyco.)  So stay tuned to PyPy!
+
+14 January 2005
+    Windows installers for `Psyco 1.4@http://sourceforge.net/project/showfiles.php?group_id=41036`. Note that they don't include the documentation nor the test and example files.
+
+6 January 2005
+    Source release `Psyco 1.4@http://sourceforge.net/project/showfiles.php?group_id=41036`. I will not release precompiled binary for all versions because I want to be able to release more quickly after a small change like a segfault fix. This release still gets a new version number because it contains an interesting new optimization: instances of user-defined classes are now really supported, i.e. their attributes keep type information and are stored quite compactly in memory. However, it only works so far with instances of a new type ``psyco.compact`` (which is subclassable). The line ``from psyco.classes import *`` has the effect of turning your classes into psyco.compact subclasses, too. For more information, see the new paragraph in the user guide about `psyco.compact@http://psyco.sourceforge.net/psycoguide/psycocompact.html`.
+
 3 December 2004
     Release `Psyco 1.3@http://sourceforge.net/project/showfiles.php?group_id=41036`.  Includes support for Python 2.4 (and of course still supports Python 2.1 to 2.3).  As always it comes with a few bugfixes, including a memory leak when using the profiler.  Another good news is that the built-in functions that read the local variables -- locals(), eval(), execfile(), vars(), dir(), input() -- now work correctly!
 

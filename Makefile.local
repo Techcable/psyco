@@ -1,1 +1,1 @@
-checkedout = `pwd`/../dist
+checkedout := `pwd`/../dist
