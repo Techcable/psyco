@@ -7,6 +7,7 @@ CONTENTS = [
     ('Intro',        'Introduction',  'introduction.html'),
     ('Doc',          'Documentation', 'doc.html'),
     ('Download',     'Download',      'download.html'),
+    ('Source (subversion)',   None,   'http://codespeak.net/svn/psyco/dist/'),
     ('SF',           None,            'http://sourceforge.net/projects/psyco'),
     ('Links',        'Links',         'links.html'),
     ]

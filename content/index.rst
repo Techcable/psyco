@@ -11,6 +11,11 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+24 September 2005
+    Documented how to use the Subversion repository, which is now considered as the most official and stable (and probably ultimate) version of Psyco.
+
+    A common question I get is whether Psyco will work on 64-bit x86 architectures.  The answer is no, unless you have a Python compiled in 32-bit compatibility mode.  If you haven't heard about PyPy, see the following news item.
+
 6 August 2005
     For the last few months, Psyco has been hosted on http://codespeak.net in a `Subversion repository@http://codespeak.net/svn/psyco/dist`.  However, Psyco has not been in very active development for quite a while now.  I consider that the project is as complete as it can reasonably be.  Developing it further would be possible and interesting, but require much more efforts that I want to invest.  The future of Psyco now lies in the `PyPy@http://codespeak.net/pypy` project, which according to plan will provide a good base for a Python interpreter with better and well-integrated Psyco-like techniques as soon as 2006.  (Additionally, it is not impossible that we could even derive a C extension module for CPython very similar to today's Psyco.)  So stay tuned to PyPy!
 

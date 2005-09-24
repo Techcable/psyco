@@ -1,12 +1,17 @@
 Download
 ********
 
-Current version is 1.4
-======================
+Subversion access to the sources
+================================
 
-`Download Release 1.4@http://sourceforge.net/project/showfiles.php?group_id=41036`.
+The source code of Psyco is hosted in a `Subversion@http://subversion.tigris.org` repository at http://codespeak.net/svn/psyco/dist/ .
 
-See the documentation for how to install from `precompiled binaries@psycoguide/binaries.html` or `from sources@psycoguide/sources.html`.
+It is recommended to install from Subversion instead of using the latest official release: the Subversion repository evolves very slowly and is completely stable.  Minor bug fixes don't go into a new official release.  See `installing from sources@psycoguide/sources.html`.
+
+Current (obsolete) version is 1.4
+=================================
+
+You can `download Release 1.4@http://sourceforge.net/project/showfiles.php?group_id=41036`.  But if you can, it is recommended to install from source: see the documentation for how to install from `precompiled binaries@psycoguide/binaries.html` or `from sources@psycoguide/sources.html`.
 
 Be sure to check the `requirements@psycoguide/req.html`.
 
