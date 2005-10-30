@@ -11,6 +11,9 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+30 October 2005
+    Tagged the current Subversion head as `Psyco 1.5@http://sourceforge.net/project/showfiles.php?group_id=41036`.  This is probably the last release of Psyco (unless incompatibilities with the upcoming CPython 2.5 show up later, but it works with the CVS CPython 2.5 at the moment).  This release contains nothing new if you already got the Subversion version.
+
 24 September 2005
     Documented how to use the Subversion repository, which is now considered as the most official and stable (and probably ultimate) version of Psyco.
 
