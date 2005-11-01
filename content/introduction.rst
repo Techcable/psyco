@@ -9,7 +9,7 @@ What you can do with it
 
 In short: run your existing Python software much faster, with no change in your source.
 
-Think of Psyco as a kind of just-in-time (JIT) compiler, a little bit like Java's, that emit machine code on the fly instead of interpreting your Python program step by step. The difference is that Psyco writes several version of the same blocks (a block is a bit of a function), which are optimized by being specialized to some kinds of variables (a "kind" can mean a type, but it is more general). The result is that your *unmodified* Python programs run faster.
+Think of Psyco as a kind of just-in-time (JIT) compiler, a little bit like what exists for other languages, that emit machine code on the fly instead of interpreting your Python program step by step. The difference with the traditional approach to JIT compilers is that Psyco writes several version of the same blocks (a block is a bit of a function), which are optimized by being specialized to some kinds of variables (a "kind" can mean a type, but it is more general). The result is that your *unmodified* Python programs run faster.
 
 Benefits
 
@@ -35,9 +35,9 @@ Psyco can transparently use a Python profiler to automatically select which func
 Differences with traditional JIT compilers
 ++++++++++++++++++++++++++++++++++++++++++
 
-Unlike the Java JITs, which writes one machine-code version of each of your function and delivers a constant speed-up (typically around 2x), Psyco uses the actual run-time data that your program manipulates to write potentially several versions of the machine code, each differently *specialized* for different kinds of data. Depending on how well it can do it, you can get smaller or higher speed-ups. In extreme cases, when all computations can be done in advance, nothing remains to be done at run-time.
+The basic idea behind "traditional" JIT compilers is to write one machine-code version of each of your function, delivering a constant speed-up (typically around 2x).  This is for example how Java JITs work -- although modern JITs use many more advanced techniques on top of that.  But the basic idea behind Psyco is slightly different. Psyco uses the actual run-time data that your program manipulates to write potentially several versions of the machine code, each differently *specialized* for different kinds of data. Depending on how well it can do it, you can get smaller or higher speed-ups. In extreme cases, when all computations can be done in advance, nothing remains to be done at run-time. In this sense, Psyco is a Just-In-Time Specializer, not really a compiler at all. See `How does it work?@doc.html#how-does-it-work` for more details.
 
-There is no static analysis of your program, no separated compilation phase, no type inference. It is all done at run-time: Psyco infers from the values your program manipulates some restrictions about the variables, like always containing an integer, or a list of strings of length 1, or a tuple whose first item is zero. Using these restrictions, efficient machine code can be emitted. Only this second phase is similar to what a C or a JIT compiler does. In C or in Java the restrictions are static: they come from the programmer's type declarations. The purpose of Psyco is to try and dynamically build the restrictions that will produce the best code for the currently-manipulated data. The flexibility comes from the fact that if any data that does not fit is later found, new machine code can be emitted.
+There is no static analysis of your program, no separated compilation phase, no type inference. It is all done at run-time: Psyco infers from the values your program manipulates some restrictions about the variables, like always containing an integer, or a list of strings of length 1, or a tuple whose first item is zero. Using these restrictions, efficient machine code can be emitted. Only this second phase -- code generation -- is similar to what a C or a JIT compiler does. In statically typed languages (C, Java...) the restrictions are static: they come from the programmer's type declarations. The purpose of Psyco is to try and dynamically build the restrictions that will produce the best code for the currently-manipulated data. The flexibility comes from the fact that if any data that does not fit is later found, new machine code can be emitted.
 
 It means that your program works in all cases, but the common case gets the fastest code without the overhead of having to care about the exceptional cases. In this perspective we can theoretically expect *faster* results than what you get with low-level languages: programs optimized for the data that it *currently* handles.
 
@@ -54,3 +54,9 @@ The new class of languages called "dynamic scripting languages", of which Python
 Psyco is both an academic and an industrial project. It is an academic experiment testing some new techniques in the field of on-line specialization. It develops an industrially useful performance benefit for Python. And first of all it is a modest step towards:
 
     *High-level languages are faster than low-level ones!*
+
+
+Future plans
+++++++++++++
+
+Psyco is a reasonably complete project.  I will not continue to develop it beyond making sure it works with future versions of Python.  My plans for 2006 are to port the techniques implemented in Psyco to `PyPy@http://codespeak.net/pypy/`.  PyPy will allow us to build a more flexible JIT specializer, easier to experiment with, and without the overhead of having to keep in sync with the evolutions of the Python language.
