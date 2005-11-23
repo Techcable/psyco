@@ -11,6 +11,9 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+23 November 2005
+    Added a Windows binary for `Psyco 1.5@http://sourceforge.net/project/showfiles.php?group_id=41036` on Python 2.4 (thanks Alexander!).
+
 30 October 2005
     Tagged the current Subversion head as `Psyco 1.5@http://sourceforge.net/project/showfiles.php?group_id=41036`.  This is probably the last release of Psyco (unless incompatibilities with the upcoming CPython 2.5 show up later, but it works with the CVS CPython 2.5 at the moment).  This release contains nothing new if you already got the Subversion version.
 
