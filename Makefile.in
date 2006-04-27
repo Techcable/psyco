@@ -1,7 +1,8 @@
-recursive-subtargets = $(wildcard */Makefile)
+#recursive-subtargets = $(wildcard */Makefile)
+recursive-subtargets = content/Makefile
 python = python
 tools = tools
-export PYTHONPATH = $(tools)
+export PYTHONPATH := $(tools):$(PYTHONPATH)
 
 
 all-recursive: $(recursive-subtargets) all

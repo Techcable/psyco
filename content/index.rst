@@ -12,7 +12,7 @@ News
 ====
 
 24 March 2006
-    Bugfix release `Psyco 1.5.1@http://sourceforge.net/project/showfiles.php?group_id=41036`.
+    Bugfix release `Psyco 1.5.1@http://sourceforge.net/project/showfiles.php?group_id=41036`.  It fixes a memory leak with functions that contain local 'def' statements or lambdas.  The performance of creating instances of new-style classes has been improved.  It is also compatible with Python 2.5 (which at the moment is only a pair of alpha releases); please report further 2.5 problems as they show up.  Finally, as usual they are some fixes for rare bugs that nevertheless showed up in practice, so yes, of course I recommend upgrading Psyco :-)
 
 23 November 2005
     Added a Windows binary for `Psyco 1.5@http://sourceforge.net/project/showfiles.php?group_id=41036` on Python 2.4 (thanks Alexander!).
