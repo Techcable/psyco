@@ -11,6 +11,9 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+24 March 2006
+    Bugfix release `Psyco 1.5.1@http://sourceforge.net/project/showfiles.php?group_id=41036`.
+
 23 November 2005
     Added a Windows binary for `Psyco 1.5@http://sourceforge.net/project/showfiles.php?group_id=41036` on Python 2.4 (thanks Alexander!).
 
