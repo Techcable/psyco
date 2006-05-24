@@ -1149,6 +1149,37 @@ static vinfo_t* pstring_concat(PsycoObject* po, vinfo_t* a, vinfo_t* b)
 #endif  /* USE_BUFSTR */
 
 
+#define STR_ob_shash   FMUT(DEF_FIELD(PyStringObject, int, ob_shash, OB_type))
+#define iSTR_OB_SHASH  FIELD_INDEX(STR_ob_shash)
+
+static vinfo_t* pstring_hash(PsycoObject* po, vinfo_t* vi) 
+{
+	condition_code_t cc;
+	vinfo_t* x;
+	
+	x = psyco_get_field(po, vi, STR_ob_shash);
+	if (x == NULL) {
+	    return NULL;
+	}
+
+	cc = integer_cmp_i(po, x, -1, Py_EQ);
+	if (cc == CC_ERROR) {
+	    // XXX: What to do here?
+	    vinfo_decref(x, po);
+		return NULL;
+	}
+	
+	if (runtime_condition_t(po, cc)) {
+		vinfo_decref(x, po);
+		/* fallback */
+		return psyco_generic_call(po, PyString_Type.tp_hash,
+				  CfReturnNormal, "v", vi);
+	}
+	
+	return x;
+}
+
+
 /***************************************************************/
 
 
@@ -1188,7 +1219,8 @@ void psy_stringobject_init(void)
 #if USE_CATSTR || USE_BUFSTR
 	Psyco_DefineMeta(m->sq_concat, pstring_concat);
 #endif
-        Psyco_DefineMeta(PyString_Type.tp_richcompare, pstring_richcompare);
+	Psyco_DefineMeta(PyString_Type.tp_richcompare, pstring_richcompare);
+	Psyco_DefineMeta(PyString_Type.tp_hash, pstring_hash);
 
 	mm = PyString_Type.tp_as_mapping;
 	if (mm) {  /* Python >= 2.3 */
