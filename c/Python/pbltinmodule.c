@@ -359,8 +359,6 @@ static vinfo_t* pbuiltin_max(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 
 static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 {
-    printf("Calling sum()!\n");
-		
 	vinfo_t* seq;
 	vinfo_t* result = NULL;
 	vinfo_t* temp;
