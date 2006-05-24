@@ -11,6 +11,7 @@ static PyCFunction cimpl_xrange;
 static PyCFunction cimpl_chr;
 static PyCFunction cimpl_ord;
 static PyCFunction cimpl_id;
+static PyCFunction cimpl_hash;
 static PyCFunction cimpl_len;
 static PyCFunction cimpl_abs;
 static PyCFunction cimpl_apply;
@@ -203,6 +204,17 @@ static vinfo_t* pbuiltin_id(PsycoObject* po, vinfo_t* vself, vinfo_t* vobj)
 	return PsycoInt_FromLong(vobj);
 }
 
+static vinfo_t* pbuiltin_hash(PsycoObject* po, vinfo_t* vself, vinfo_t* vobj)
+{
+	vinfo_t* result;
+	METH_O_WRAPPER(hash, vself, vobj);
+	
+	result = PsycoObject_Hash(po, vobj);
+	if (result != NULL)
+		result = PsycoInt_FROM_LONG(result);
+	return result;
+}
+
 static vinfo_t* pbuiltin_len(PsycoObject* po, vinfo_t* vself, vinfo_t* vobj)
 {
 	vinfo_t* result;
@@ -280,6 +292,7 @@ static vinfo_t* pbuiltin_divmod(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 }
 
 
+
 /***************************************************************/
 
 
@@ -295,12 +308,14 @@ void psyco_bltinmodule_init(void)
 	DEFMETA( chr,		METH_VARARGS );
 	DEFMETA( ord,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( id,		HAVE_METH_O ? METH_O : METH_VARARGS );
+	DEFMETA( hash,          HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( len,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( abs,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( apply,		METH_VARARGS );
 	DEFMETA( divmod,	METH_VARARGS );
 	cimpl_xrange = Psyco_DefineModuleC(md, "xrange", METH_VARARGS,
                                            &pbuiltin_xrange, prange_new);
+										   
 #undef DEFMETA
 	Py_XDECREF(md);
 }
