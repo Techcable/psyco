@@ -535,8 +535,10 @@ PyObject* psyco_build_merge_points(PyCodeObject* co, int module)
   if (co->co_flags & CO_GENERATOR)
     {
       debug_printf(1 + (strcmp(PyCodeObject_NAME(co), "?")==0),
-                   ("unsupported generator at %s\n",
-                    PyCodeObject_NAME(co)));
+                   ("unsupported generator at %s (%s:%d)\n",
+                    PyCodeObject_NAME(co),
+                    PyString_AS_STRING(co->co_filename),
+                    co->co_firstlineno));
       Py_INCREF(Py_None);
       return Py_None;
     }
@@ -670,8 +672,10 @@ PyObject* psyco_build_merge_points(PyCodeObject* co, int module)
                 {
                 unsupported_instruction:
                   debug_printf(1 + (strcmp(PyCodeObject_NAME(co), "?")==0),
-                               ("unsupported opcode %d at %s:%d\n",
-                                (int) op, PyCodeObject_NAME(co), i));
+                               ("unsupported opcode %d at %s:%d (%s:%d)\n",
+                                (int) op, PyCodeObject_NAME(co), i,
+                               PyString_AS_STRING(co->co_filename),
+                               co->co_firstlineno));
                   s = Py_None;
                   Py_INCREF(s);
                   goto done;

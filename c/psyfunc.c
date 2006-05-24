@@ -59,14 +59,18 @@ static bool fncall_init(struct fncall_arg_s* fncall,
   int nfrees = PyTuple_GET_SIZE(co->co_freevars);
   if (co->co_flags & CO_VARKEYWORDS)
     {
-      debug_printf(1, ("unsupported ** argument in call to %s\n",
-                       PyCodeObject_NAME(co)));
+      debug_printf(1, ("unsupported ** argument in call to %s (%s:%d)\n",
+                       PyCodeObject_NAME(co),
+                       PyString_AS_STRING(co->co_filename),
+                       co->co_firstlineno));
       return false;
     }
   if (ncells != 0 || nfrees != 0)
     {
-      debug_printf(1, ("unsupported free or cell vars in %s\n",
-                       PyCodeObject_NAME(co)));
+      debug_printf(1, ("unsupported free or cell vars in %s (%s:%d)\n",
+                       PyCodeObject_NAME(co),
+                       PyString_AS_STRING(co->co_filename),
+                       co->co_firstlineno));
       return false;
     }
   fncall->co = co;
