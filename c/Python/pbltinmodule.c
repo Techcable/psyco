@@ -12,6 +12,9 @@ static PyCFunction cimpl_chr;
 static PyCFunction cimpl_ord;
 static PyCFunction cimpl_id;
 static PyCFunction cimpl_hash;
+static PyCFunction cimpl_min;
+static PyCFunction cimpl_max;
+static PyCFunction cimpl_sum;
 static PyCFunction cimpl_len;
 static PyCFunction cimpl_abs;
 static PyCFunction cimpl_apply;
@@ -292,6 +295,155 @@ static vinfo_t* pbuiltin_divmod(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 }
 
 
+// XXX: min(), max(), cmp(), list(), set(), dict(), round()
+// XXX: 64 bit
+// XXX: kwargs?
+
+static vinfo_t* pbuiltin_min_max(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs, PyCFunction cimpl, int op) 
+{
+	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
+
+        // XXX: 1 arg: to iter over
+
+	vinfo_t* item;
+	vinfo_t* maxitem = NULL;
+        vinfo_t* result;
+	int i = 0;
+	while (i < tuplesize) {
+	    item = PsycoTuple_GET_ITEM(vargs, i);
+		
+		if (Psyco_VerifyType(po, item, &PyDict_Type)) {
+			goto fail;
+		}
+		
+	    if (maxitem == NULL) {
+			maxitem = item;
+		} else {
+			result = PsycoObject_RichCompareBool(po, item, maxitem, op);
+			if (result == NULL)
+			   return NULL;
+			   
+			switch (runtime_NON_NULL_f(po, result)) {
+				case true:
+					maxitem = item;
+					break;
+				case false:
+					break;
+				default:
+					goto fail;
+			}
+		}
+		
+		i++;
+	}
+	
+	if (maxitem != NULL) {
+	    vinfo_incref(maxitem);
+	    return maxitem;
+	}
+
+fail:
+	return psyco_generic_call(po, cimpl, CfReturnRef|CfPyErrIfNull,
+				  "lv", NULL, vargs);
+}
+
+static vinfo_t* pbuiltin_min(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
+{
+	return pbuiltin_min_max(po, vself, vargs, cimpl_min, Py_LT);
+}
+
+static vinfo_t* pbuiltin_max(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
+{
+    return pbuiltin_min_max(po, vself, vargs, cimpl_max, Py_GT);
+}
+
+static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
+{
+    printf("Calling sum()!\n");
+		
+	vinfo_t* seq;
+	vinfo_t* result = NULL;
+	vinfo_t* temp;
+	vinfo_t* item;
+	vinfo_t* iter;
+	
+	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
+	
+	if (tuplesize < 1 || tuplesize > 2)
+	    goto fail;
+		
+	seq = PsycoTuple_GET_ITEM(vargs, 0);
+	
+	printf("tuplesize=%d seq=%d\n", tuplesize, seq);
+	
+	iter = PsycoObject_GetIter(po, seq);
+//	if (iter == NULL) {
+//        printf("no iter!\n");
+//		if (PycException_Occurred(po)) {
+//		    PycException_Clear(po);
+//		}
+//	    goto fail;
+//	}
+		
+	if (tuplesize > 1)
+	    printf("tuplesize > 1\n");
+	    result = PsycoTuple_GET_ITEM(vargs, 1);
+		
+	if (result != NULL) {
+	    printf("Temporary early exity\n");
+	    vinfo_incref(result);
+	    return result;
+	}
+
+	goto fail;
+			
+	if (result == NULL) {
+            printf("Offset from zero...\n");
+    	    return psyco_generic_call(po, PyInt_AsLong,
+				  CfReturnRef|CfPyErrCheckMinus1,
+				  "l", 0);
+	} else {	    
+		if (Psyco_VerifyType(po, item, &PyBaseString_Type)) {
+		    goto fail;
+		}
+	}
+	
+	vinfo_incref(result);
+	return result;
+	
+	for(;;) {
+	        item = PsycoIter_Next(po, iter);
+		if (item == NULL) {
+			extra_assert(PycException_Occurred(po));
+			/* catch PyExc_StopIteration */
+			temp = PycException_Matches(po, PyExc_StopIteration);
+			if (runtime_NON_NULL_t(po, temp) == true) {
+				/* iterator ended normally */
+				PycException_Clear(po);
+				break;
+			} else {
+			    printf("Exception!\n");
+				goto fail;
+			}
+                }
+		temp = PsycoNumber_Add(po, result, item);
+		result = temp;
+		if (result == NULL) {
+		    goto fail;
+		}
+	}
+	
+	if (result != NULL) 
+    	    vinfo_incref(result);
+	    return result;
+
+fail:
+        printf("fail!\n");
+        return psyco_generic_call(po, cimpl_sum, CfReturnRef|CfPyErrIfNull,
+				  "lv", NULL, vargs);
+}
+
+
 
 /***************************************************************/
 
@@ -308,7 +460,10 @@ void psyco_bltinmodule_init(void)
 	DEFMETA( chr,		METH_VARARGS );
 	DEFMETA( ord,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( id,		HAVE_METH_O ? METH_O : METH_VARARGS );
-	DEFMETA( hash,          HAVE_METH_O ? METH_O : METH_VARARGS );
+        DEFMETA( hash,          HAVE_METH_O ? METH_O : METH_VARARGS );
+	DEFMETA( min,           METH_VARARGS );
+	DEFMETA( max,           METH_VARARGS );
+	DEFMETA( sum,           METH_VARARGS );
 	DEFMETA( len,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( abs,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( apply,		METH_VARARGS );
