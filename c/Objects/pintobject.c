@@ -499,7 +499,19 @@ static vinfo_t* pint_rshift(PsycoObject* po, vinfo_t* v, vinfo_t* w)
 }
 
 
+static long cimpl_int_hash(long i)
+{
+    if (i == -1)
+        i = -2;
+    return i;
+}
 
+static vinfo_t* pint_hash(PsycoObject* po, vinfo_t* v)
+{
+	vinfo_t* a;
+	CONVERT_TO_LONG(v, a);
+	return psyco_generic_call(po, cimpl_int_hash, CfPure|CfReturnNormal, "v", a);
+}
 
 /* Careful, most operations might return a long if they overflow.
    Only list here the ones that cannot. Besides, all these operations
@@ -533,6 +545,8 @@ void psy_intobject_init(void)
         Psyco_DefineMeta(m->nb_divide,   pint_div);
 	Psyco_DefineMeta(m->nb_remainder,pint_mod);
 	Psyco_DefineMeta(m->nb_power,    pint_pow);
+	
+	Psyco_DefineMeta(PyInt_Type.tp_hash, pint_hash);
 
 	INIT_SVIRTUAL(psyco_computed_int, compute_int,
 		      direct_compute_int, 0, 0, 0);
