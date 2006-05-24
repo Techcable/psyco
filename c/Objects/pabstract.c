@@ -214,6 +214,19 @@ bool PsycoObject_SetItem(PsycoObject* po, vinfo_t* o, vinfo_t* key,
 }
 
 DEFINEFN
+vinfo_t* PsycoObject_Hash(PsycoObject* po, vinfo_t* vi)
+{
+    PyTypeObject* tp = Psyco_NeedType(po, vi);
+	if (tp == NULL)
+		return NULL;
+	
+	if (tp->tp_hash)
+	    return Psyco_META1(po, tp->tp_hash, CfReturnNormal, "v", vi);
+	else
+	    return type_error(po, "unhashable type");
+}
+
+DEFINEFN
 vinfo_t* PsycoObject_Size(PsycoObject* po, vinfo_t* vi)
 {
 	PySequenceMethods *m;
@@ -459,6 +472,25 @@ vinfo_t* PsycoSequence_Tuple(PsycoObject* po, vinfo_t* seq)
 	/* the result is a tuple */
 	Psyco_AssertType(po, v, &PyTuple_Type);
 	return v;
+}
+
+
+DEFINEFN
+vinfo_t* PsycoMapping_Size(PsycoObject* po, vinfo_t* vi)
+{
+	PyMappingMethods *mm;
+	void* f;
+	PyTypeObject* tp = Psyco_NeedType(po, vi);
+	if (tp == NULL)
+		return NULL;
+
+    mm = tp->tp_as_mapping;
+	if (mm && mm->mp_length)
+	    f = mm->mp_length;
+	else
+	    return type_error(po, "len() of unsized object");
+	
+	return Psyco_META1(po, f, CfReturnNormal|CfPyErrIfNeg, "v", vi);
 }
 
 
