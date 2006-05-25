@@ -1,4 +1,5 @@
 #include "pbltinmodule.h"
+#include "../Objects/pfloatobject.h"
 #include "../Objects/pintobject.h"
 #include "../Objects/ptupleobject.h"
 #include "../Objects/plistobject.h"
@@ -19,7 +20,7 @@ static PyCFunction cimpl_len;
 static PyCFunction cimpl_abs;
 static PyCFunction cimpl_apply;
 static PyCFunction cimpl_divmod;
-
+static PyCFunction cimpl_round;
 
 #if HAVE_METH_O
 # define METH_O_WRAPPER(name, self, arg)    do { } while (0)  /* nothing */
@@ -295,19 +296,91 @@ static vinfo_t* pbuiltin_divmod(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 }
 
 
-// XXX: min(), max(), cmp(), list(), set(), dict(), round()
+// XXX: cmp(), int(), long(), float(), list(), set(), dict(), round()
 // XXX: 64 bit
 // XXX: kwargs?
+
+static vinfo_t* pbuiltin_round(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
+{
+	vinfo_t* number;
+	vinfo_t* ndigits;
+
+	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
+	
+	if (tuplesize < 1 || tuplesize > 2) {
+	    goto fail;
+	}
+	
+	number = PsycoTuple_GET_ITEM(vargs, 0);
+	if (number == NULL) {
+	    goto fail;
+	}
+		
+	// XXX: Only supports floats right now?
+	if (!Psyco_VerifyType(po, number, &PyFloat_Type)) {
+	    goto fail;
+	}
+	
+	if (tuplesize > 1) {
+	    ndigits = PsycoTuple_GET_ITEM(vargs, 1);
+		// XXX: Passing float ndigits to round() causes deprecation warning
+		if (ndigits == NULL || !Psyco_VerifyType(po, ndigits, &PyInt_Type)) {
+			goto fail;
+		}
+		ndigits = PsycoInt_AS_LONG(po, ndigits);
+		if (ndigits == NULL) {
+			goto fail;
+		}
+	} else {
+		ndigits = psyco_vi_Zero();
+	}
+
+	vinfo_t *a1, *a2, *x;
+	vinfo_array_t* result;
+	
+	// XXX: Sometimes this fails, need to find out why.
+	if (psyco_convert_to_double(po, number, &a1, &a2) != true) {
+	    goto fail; 
+	}
+	
+	result = array_new(2);
+	
+	vinfo_incref(ndigits);
+	
+    x = psyco_generic_call(po, cimpl_fp_round, CfPure|CfNoReturnValue,
+                           "vvva", a1, a2, ndigits, result);
+						   
+	vinfo_decref(ndigits, po);
+
+	vinfo_decref(a1, po);
+    vinfo_decref(a2, po);
+	
+	if (x != NULL) {
+	    x = PsycoFloat_FROM_DOUBLE(result->items[0], result->items[1]);	
+		array_release(result);
+		return x;
+	} else {
+	    array_release(result);
+		goto fail;
+	}
+
+fail:
+	return psyco_generic_call(po, cimpl_round, CfReturnRef|CfPyErrIfNull,
+				  "lv", NULL, vargs);
+}
 
 static vinfo_t* pbuiltin_min_max(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs, PyCFunction cimpl, int op) 
 {
 	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
 
-        // XXX: 1 arg: to iter over
+	// XXX: Support single argument to iter over
+	if (tuplesize == 1) {
+		goto fail;
+	}
 
 	vinfo_t* item;
 	vinfo_t* maxitem = NULL;
-        vinfo_t* result;
+	vinfo_t* result;
 	int i = 0;
 	while (i < tuplesize) {
 	    item = PsycoTuple_GET_ITEM(vargs, i);
@@ -363,80 +436,67 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 	vinfo_t* result = NULL;
 	vinfo_t* temp;
 	vinfo_t* item;
-	vinfo_t* iter;
 	
 	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
 	
-	if (tuplesize < 1 || tuplesize > 2)
+	if (tuplesize < 1 || tuplesize > 2) {
 	    goto fail;
-		
+	}
+	
 	seq = PsycoTuple_GET_ITEM(vargs, 0);
-	
-	printf("tuplesize=%d seq=%d\n", tuplesize, seq);
-	
-	iter = PsycoObject_GetIter(po, seq);
-//	if (iter == NULL) {
-//        printf("no iter!\n");
-//		if (PycException_Occurred(po)) {
-//		    PycException_Clear(po);
-//		}
-//	    goto fail;
-//	}
+	if (seq == NULL) {
+	    goto fail;
+	}
 		
-	if (tuplesize > 1)
-	    printf("tuplesize > 1\n");
+	if (tuplesize > 1) {
 	    result = PsycoTuple_GET_ITEM(vargs, 1);
-		
-	if (result != NULL) {
-	    printf("Temporary early exity\n");
-	    vinfo_incref(result);
-	    return result;
-	}
-
-	goto fail;
-			
-	if (result == NULL) {
-            printf("Offset from zero...\n");
-    	    return psyco_generic_call(po, PyInt_AsLong,
-				  CfReturnRef|CfPyErrCheckMinus1,
-				  "l", 0);
-	} else {	    
-		if (Psyco_VerifyType(po, item, &PyBaseString_Type)) {
-		    goto fail;
-		}
-	}
-	
-	vinfo_incref(result);
-	return result;
-	
-	for(;;) {
-	        item = PsycoIter_Next(po, iter);
-		if (item == NULL) {
-			extra_assert(PycException_Occurred(po));
-			/* catch PyExc_StopIteration */
-			temp = PycException_Matches(po, PyExc_StopIteration);
-			if (runtime_NON_NULL_t(po, temp) == true) {
-				/* iterator ended normally */
-				PycException_Clear(po);
-				break;
-			} else {
-			    printf("Exception!\n");
-				goto fail;
-			}
-                }
-		temp = PsycoNumber_Add(po, result, item);
-		result = temp;
 		if (result == NULL) {
 		    goto fail;
 		}
+		vinfo_incref(result);
+	}
+			
+	if (result != NULL && Psyco_VerifyType(po, result, &PyBaseString_Type)) {
+		goto fail;
 	}
 	
-	if (result != NULL) 
-    	    vinfo_incref(result);
-	    return result;
+	vinfo_t* index = psyco_vi_Zero();
+	
+	for(;;) {
+		item = PsycoSequence_GetItem(po, seq, index);
+		if (item == NULL) {
+			vinfo_t* matches = PycException_Matches(po, PyExc_IndexError);
+			if (runtime_NON_NULL_t(po, matches) == true) {
+			    break;
+			} else {
+				goto fail;
+			}
+		}
+	
+		temp = integer_add_i(po, index, 1, true);
+		vinfo_xdecref(index, po);
+		index = temp;
+		if (index == NULL) {
+		    goto fail;
+		}
+		
+		if (result == NULL) {
+		    result = item;
+		} else {
+			temp = PsycoNumber_Add(po, result, item);
+			vinfo_xdecref(result, po);
+			vinfo_xdecref(item, po);
+			result = temp;
+			if (result == NULL) {
+				goto fail;
+			}
+		}
+	}
+
+	vinfo_incref(result);
+	return result;
 
 fail:
-        printf("fail!\n");
         return psyco_generic_call(po, cimpl_sum, CfReturnRef|CfPyErrIfNull,
 				  "lv", NULL, vargs);
 }
@@ -458,14 +518,15 @@ void psyco_bltinmodule_init(void)
 	DEFMETA( chr,		METH_VARARGS );
 	DEFMETA( ord,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( id,		HAVE_METH_O ? METH_O : METH_VARARGS );
-        DEFMETA( hash,          HAVE_METH_O ? METH_O : METH_VARARGS );
-	DEFMETA( min,           METH_VARARGS );
-	DEFMETA( max,           METH_VARARGS );
-	DEFMETA( sum,           METH_VARARGS );
+	DEFMETA( hash,		HAVE_METH_O ? METH_O : METH_VARARGS );
+	DEFMETA( min,		METH_VARARGS );
+	DEFMETA( max,		METH_VARARGS );
+	DEFMETA( sum,		METH_VARARGS );
 	DEFMETA( len,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( abs,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( apply,		METH_VARARGS );
 	DEFMETA( divmod,	METH_VARARGS );
+	DEFMETA( round,		METH_VARARGS );
 	cimpl_xrange = Psyco_DefineModuleC(md, "xrange", METH_VARARGS,
                                            &pbuiltin_xrange, prange_new);
 										   
