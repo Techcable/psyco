@@ -156,6 +156,29 @@ cimpl_fp_abs(double a, double* result) {
     *result = fabs(a);
 }
 
+DEFINEFN void
+cimpl_fp_round(double number, int ndigits, double* result)
+{
+	double f = 1.0;
+	int i = abs(ndigits);
+	while  (--i >= 0) {
+		f = f*10.0;
+	}
+	if (ndigits < 0)
+		number /= f;
+	else
+		number *= f;
+	if (number >= 0.0)
+		number = floor(number + 0.5);
+	else
+		number = ceil(number - 0.5);
+	if (ndigits < 0)
+		number *= f;
+	else
+		number /= f;
+	
+	*result = number;
+}
 
 DEFINEFN void 
 cimpl_fp_from_long(long value, double* result) 
@@ -444,7 +467,6 @@ static vinfo_t* pfloat_pos(PsycoObject* po, vinfo_t* v)
     RELEASE_DOUBLE(a1, a2);
     return x;
 }
-
 
 static vinfo_t* pfloat_neg(PsycoObject* po, vinfo_t* v)
 {

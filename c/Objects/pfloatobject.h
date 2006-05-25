@@ -75,6 +75,9 @@ cimpl_fp_from_long(long value, double* result);
 EXTERNFN void 
 cimpl_fp_from_float(float value, double* result);
 
+EXTERNFN void
+cimpl_fp_round(double number, int ndigits, double* result);
+
 
 #endif /* HAVE_FP_FN_CALLS */
 
