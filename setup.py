@@ -129,6 +129,8 @@ if sys.platform == 'win32':
         extra_compile_args.append('/ZI')   # debugging info
         extra_link_args.append('/debug')   # debugging info
     macros.insert(0, ('NDEBUG', '1'))  # prevents from being linked against python2x_d.lib
+elif sys.platform == 'darwin':
+    macros.insert(0, ('EBP_IS_RESERVED', '1'))
 
 
 CLASSIFIERS = [
