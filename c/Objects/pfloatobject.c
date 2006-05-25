@@ -192,6 +192,28 @@ cimpl_fp_from_float(float value, double* result)
     *result = value;
 }
 
+DEFINEFN
+vinfo_t* PsycoFloat_FromLong(PsycoObject* po, vinfo_t* vobj)
+{
+    if (Psyco_VerifyType(po, vobj, &PyInt_Type) != true) {
+		return NULL;
+	}
+	
+    vinfo_t* vlong = PsycoInt_AS_LONG(po, vobj);
+	if (vlong == NULL) {
+		return NULL;
+	}
+
+    vinfo_t* x;
+    vinfo_array_t* result = array_new(2);
+    x = psyco_generic_call(po, cimpl_fp_from_long, CfNoReturnValue|CfPure,
+                           "va", vlong, result);
+    if (x != NULL) {
+        x = PsycoFloat_FROM_DOUBLE(result->items[0], result->items[1]);
+    }
+    array_release(result);
+    return x;
+}
 
 DEFINEFN
 vinfo_t* PsycoFloat_FromFloat(PsycoObject* po, vinfo_t* vfloat)
