@@ -1,5 +1,5 @@
 
-#include "Python/pyport.h"
+#include "pyport.h"
 
 #include "pintobject.h"
 #include "plongobject.h"
