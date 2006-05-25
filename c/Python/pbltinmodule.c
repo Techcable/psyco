@@ -1,4 +1,5 @@
 #include "pbltinmodule.h"
+#include "../Objects/pabstract.h"
 #include "../Objects/pfloatobject.h"
 #include "../Objects/pintobject.h"
 #include "../Objects/ptupleobject.h"
@@ -6,6 +7,8 @@
 #include "../Objects/pstringobject.h"
 #include "../Objects/prangeobject.h"
 
+static PyCFunction cimpl_float;
+static PyCFunction cimpl_int;
 
 static PyCFunction cimpl_range;
 static PyCFunction cimpl_xrange;
@@ -156,6 +159,64 @@ static vinfo_t* prange_new(PsycoObject* po, PyTypeObject* type,
 #else
 # define prange_new  NULL
 #endif
+
+#if NEW_STYLE_TYPES
+static vinfo_t* pfloat_new(PsycoObject* po, PyTypeObject* type,
+			   vinfo_t* vargs, vinfo_t* vkw)
+{
+	psyco_assert(type == &PyFloat_Type);   /* no subclassing xrange */
+
+	if (PsycoTuple_Load(vargs) != 1) {
+		goto fail;
+	}
+	
+	vinfo_t* x = PsycoNumber_Float(po, PsycoTuple_GET_ITEM(vargs, 0));
+	if (x == NULL) {
+		goto fail;
+	}
+	
+	if (PycException_Occurred(po)) {
+		return NULL;
+	} else {
+	    return x;
+	}
+	
+fail:
+	return psyco_generic_call(po, type->tp_new,
+				  CfReturnRef|CfPyErrIfNull,
+				  "lvv", type, vargs, vkw);
+}
+#endif
+
+
+#if NEW_STYLE_TYPES
+static vinfo_t* pint_new(PsycoObject* po, PyTypeObject* type,
+			   vinfo_t* vargs, vinfo_t* vkw)
+{
+	psyco_assert(type == &PyInt_Type);   /* no subclassing xrange */
+
+	if (PsycoTuple_Load(vargs) != 1) {
+		goto fail;
+	}
+	
+	vinfo_t* x = PsycoNumber_Int(po, PsycoTuple_GET_ITEM(vargs, 0));
+	if (x == NULL) {
+		goto fail;
+	}
+	
+	if (PycException_Occurred(po)) {
+		return NULL;
+	} else {
+	    return x;
+	}
+	
+fail:
+	return psyco_generic_call(po, type->tp_new,
+				  CfReturnRef|CfPyErrIfNull,
+				  "lvv", type, vargs, vkw);
+}
+#endif
+
 
 static vinfo_t* pbuiltin_chr(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 {
@@ -564,6 +625,13 @@ void psyco_bltinmodule_init(void)
 	cimpl_xrange = Psyco_DefineModuleC(md, "xrange", METH_VARARGS,
                                            &pbuiltin_xrange, prange_new);
 										   
+#if NEW_STYLE_TYPES
+	cimpl_float = Psyco_DefineModuleC(md, "float", METH_VARARGS,
+                                           NULL, pfloat_new);
+	cimpl_int = Psyco_DefineModuleC(md, "int", METH_VARARGS,
+                                           NULL, pint_new);
+#endif
+
 #undef DEFMETA
 	Py_XDECREF(md);
 }
