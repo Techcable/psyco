@@ -16,6 +16,7 @@ static PyCFunction cimpl_hash;
 static PyCFunction cimpl_min;
 static PyCFunction cimpl_max;
 static PyCFunction cimpl_sum;
+static PyCFunction cimpl_pow;
 static PyCFunction cimpl_len;
 static PyCFunction cimpl_abs;
 static PyCFunction cimpl_apply;
@@ -502,6 +503,34 @@ fail:
 }
 
 
+static vinfo_t* pbuiltin_pow(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
+{
+	vinfo_t* v;
+	vinfo_t* w;
+	vinfo_t* z;
+	
+	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
+	
+	if (tuplesize != 2) {
+	    goto fail;
+	}
+	
+	v = PsycoTuple_GET_ITEM(vargs, 0);
+	w = PsycoTuple_GET_ITEM(vargs, 1);
+	z = psyco_vi_None();
+	
+	vinfo_t* x = PsycoNumber_Power(po, v, w, z);
+	
+	if (x != NULL) {
+	    return x;
+	}
+	
+fail:
+	return psyco_generic_call(po, cimpl_pow, CfReturnRef|CfPyErrIfNull,
+				  "lv", NULL, vargs);
+}
+
+
 
 /***************************************************************/
 
@@ -522,6 +551,7 @@ void psyco_bltinmodule_init(void)
 	DEFMETA( min,		METH_VARARGS );
 	DEFMETA( max,		METH_VARARGS );
 	DEFMETA( sum,		METH_VARARGS );
+	DEFMETA( pow,		METH_VARARGS );
 	DEFMETA( len,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( abs,		HAVE_METH_O ? METH_O : METH_VARARGS );
 	DEFMETA( apply,		METH_VARARGS );
