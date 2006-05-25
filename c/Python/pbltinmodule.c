@@ -25,6 +25,7 @@ static PyCFunction cimpl_abs;
 static PyCFunction cimpl_apply;
 static PyCFunction cimpl_divmod;
 static PyCFunction cimpl_round;
+static PyCFunction cimpl_iter;
 
 #if HAVE_METH_O
 # define METH_O_WRAPPER(name, self, arg)    do { } while (0)  /* nothing */
@@ -434,29 +435,31 @@ fail:
 static vinfo_t* pbuiltin_min_max(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs, PyCFunction cimpl, int op) 
 {
 	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
-
-	// XXX: Support single argument to iter over
+	
+	 // XXX: Support single argument to iter over
 	if (tuplesize == 1) {
 		goto fail;
 	}
-
+	
 	vinfo_t* item;
 	vinfo_t* maxitem = NULL;
 	vinfo_t* result;
+	
 	int i = 0;
 	while (i < tuplesize) {
-	    item = PsycoTuple_GET_ITEM(vargs, i);
+		item = PsycoTuple_GET_ITEM(vargs, i);
 		
 		if (Psyco_VerifyType(po, item, &PyDict_Type)) {
 			goto fail;
 		}
 		
-	    if (maxitem == NULL) {
+		if (maxitem == NULL) {
 			maxitem = item;
 		} else {
 			result = PsycoObject_RichCompareBool(po, item, maxitem, op);
-			if (result == NULL)
-			   return NULL;
+			if (result == NULL) {
+			   goto fail;
+			}
 			   
 			switch (runtime_NON_NULL_f(po, result)) {
 				case true:
@@ -470,8 +473,9 @@ static vinfo_t* pbuiltin_min_max(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs
 		}
 		
 		i++;
-	}
 	
+	}
+		
 	if (maxitem != NULL) {
 	    vinfo_incref(maxitem);
 	    return maxitem;
@@ -597,6 +601,31 @@ fail:
 
 
 
+static vinfo_t* pbuiltin_iter(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
+{
+	vinfo_t* v;
+	vinfo_t* w;
+	vinfo_t* z;
+	
+	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
+	
+	if (tuplesize != 1) {
+	    goto fail;
+	}
+	
+	vinfo_t* x = PsycoObject_GetIter(po, PsycoTuple_GET_ITEM(vargs, 0));
+	
+	if (x != NULL) {
+	    return x;
+	}
+	
+fail:
+	return psyco_generic_call(po, cimpl_iter, CfReturnRef|CfPyErrIfNull,
+				  "lv", NULL, vargs);
+}
+
+
+
 /***************************************************************/
 
 
@@ -622,6 +651,7 @@ void psyco_bltinmodule_init(void)
 	DEFMETA( apply,		METH_VARARGS );
 	DEFMETA( divmod,	METH_VARARGS );
 	DEFMETA( round,		METH_VARARGS );
+	DEFMETA( iter,		METH_VARARGS );
 	cimpl_xrange = Psyco_DefineModuleC(md, "xrange", METH_VARARGS,
                                            &pbuiltin_xrange, prange_new);
 										   
