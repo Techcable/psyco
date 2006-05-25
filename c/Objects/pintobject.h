@@ -46,6 +46,8 @@ PSY_INLINE vinfo_t* PsycoInt_AS_LONG(PsycoObject* po, vinfo_t* v)
 	return psyco_get_const(po, v, INT_ob_ival);
 }
 
+EXTERNFN vinfo_t* PsycoInt_FromFloat(PsycoObject* po, vinfo_t* v);
+
 /* return a new ref */
 EXTERNFN vinfo_t* PsycoInt_AsLong(PsycoObject* po, vinfo_t* v);
 

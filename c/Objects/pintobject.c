@@ -1,3 +1,6 @@
+
+#include "Python/pyport.h"
+
 #include "pintobject.h"
 #include "plongobject.h"
 
@@ -78,6 +81,52 @@ static long cimpl_int_pow2(long iv, long iw)
 	}
 	return cimpl_int_pow2_nonneg(iv, iw);
 }
+
+
+static long cimpl_int_from_float(double value)
+{
+	double wholepart;       /* integral portion of x, rounded toward 0 */
+	(void)modf(value, &wholepart);
+	
+	if (LONG_MIN < wholepart && wholepart < LONG_MAX) {
+		return (long) wholepart;
+	} else {
+		/* the exception will be cleared by the caller */
+		PyErr_SetString(PyExc_OverflowError, "punt and do this in python code");
+		return -1;
+	}
+}
+
+
+DEFINEFN
+vinfo_t* PsycoInt_FromFloat(PsycoObject* po, vinfo_t* vobj)
+{
+    if (Psyco_VerifyType(po, vobj, &PyFloat_Type) != true) {
+		return NULL;
+	}
+	
+	vinfo_t* v1;
+	vinfo_t* v2;
+	
+	if (psyco_convert_to_double(po, vobj, &v1, &v2) != true) {
+		return NULL;
+	}
+
+    vinfo_t* x = psyco_generic_call(po, cimpl_int_from_float, 
+							CfPure|CfReturnNormal|CfPyErrCheckMinus1, 
+							"vv", v1, v2);
+							
+	vinfo_decref(v1, po);
+	vinfo_decref(v2, po);
+	
+	if (x != NULL) {
+		return PsycoInt_FROM_LONG(x);
+	} else {
+		/* Either an error occured or it overflowed. */
+		return NULL;
+	}
+}
+
 
 DEFINEFN
 vinfo_t* PsycoInt_AsLong(PsycoObject* po, vinfo_t* v)
