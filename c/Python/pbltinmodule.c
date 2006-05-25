@@ -511,13 +511,17 @@ static vinfo_t* pbuiltin_pow(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 	
 	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
 	
-	if (tuplesize != 2) {
+	if (tuplesize < 2 || tuplesize > 3) {
 	    goto fail;
 	}
 	
 	v = PsycoTuple_GET_ITEM(vargs, 0);
 	w = PsycoTuple_GET_ITEM(vargs, 1);
-	z = psyco_vi_None();
+	if (tuplesize > 2) {
+		z = PsycoTuple_GET_ITEM(vargs, 2);
+	} else {
+		z = psyco_vi_None();
+	}
 	
 	vinfo_t* x = PsycoNumber_Power(po, v, w, z);
 	
