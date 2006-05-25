@@ -37,6 +37,9 @@ EXTERNFN vinfo_t* PsycoSequence_Tuple(PsycoObject* po, vinfo_t* seq);
 
 EXTERNFN vinfo_t* PsycoMapping_Size(PsycoObject* po, vinfo_t* vi);
 
+EXTERNFN vinfo_t* PsycoNumber_Float(PsycoObject* po, vinfo_t* vi);
+EXTERNFN vinfo_t* PsycoNumber_Int(PsycoObject* po, vinfo_t* vi);
+
 EXTERNFN vinfo_t* PsycoNumber_Positive(PsycoObject* po, vinfo_t* vi);
 EXTERNFN vinfo_t* PsycoNumber_Negative(PsycoObject* po, vinfo_t* vi);
 EXTERNFN vinfo_t* PsycoNumber_Invert(PsycoObject* po, vinfo_t* vi);

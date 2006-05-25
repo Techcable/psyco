@@ -1,4 +1,5 @@
 #include "pabstract.h"
+#include "pfloatobject.h"
 #include "pintobject.h"
 #include "plongobject.h"
 #include "pstringobject.h"
@@ -721,6 +722,47 @@ BINARY_FUNC(PsycoNumber_FloorDivide, nb_floor_divide, "//")
 BINARY_FUNC(PsycoNumber_TrueDivide, nb_true_divide, "/")
 #endif
 
+
+DEFINEFN
+vinfo_t* PsycoNumber_Float(PsycoObject* po, vinfo_t* v)
+{
+
+	PyTypeObject* tp = Psyco_FastType(v);
+	
+	if (PyType_TypeCheck(tp, &PyInt_Type)) {
+		return PsycoFloat_FromLong(po, v);
+	} else if (PyType_TypeCheck(tp, &PyFloat_Type)) {
+		vinfo_t* v1;
+		vinfo_t* v2;		
+		if (psyco_convert_to_double(po, v, &v1, &v2) != true) {
+			return NULL;
+		}
+		vinfo_t* x = PsycoFloat_FromDouble(v1, v2);
+		vinfo_decref(v1, po);
+		vinfo_decref(v2, po);
+		return x;
+	} else {
+		return NULL;
+	}
+}
+
+DEFINEFN
+vinfo_t* PsycoNumber_Int(PsycoObject* po, vinfo_t* v)
+{
+	PyTypeObject* tp = Psyco_FastType(v);
+	
+	if (PyType_TypeCheck(tp, &PyFloat_Type)) {
+		return PsycoInt_FromFloat(po, v);
+	} else if (PyType_TypeCheck(tp, &PyInt_Type)) {
+		vinfo_t* vlong = PsycoInt_AS_LONG(po, v);
+		if (vlong == NULL) {
+			return NULL;
+		}
+		return PsycoInt_FromLong(vlong);
+	} else {
+		return NULL;
+	}
+}
 
 DEFINEFN
 vinfo_t* PsycoNumber_Add(PsycoObject* po, vinfo_t* v, vinfo_t* w)
