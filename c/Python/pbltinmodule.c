@@ -428,6 +428,8 @@ static vinfo_t* pbuiltin_round(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 	}
 
 fail:
+	if (PycException_Occurred(po))
+		return NULL;
 	return psyco_generic_call(po, cimpl_round, CfReturnRef|CfPyErrIfNull,
 				  "lv", NULL, vargs);
 }
@@ -482,6 +484,8 @@ static vinfo_t* pbuiltin_min_max(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs
 	}
 
 fail:
+	if (PycException_Occurred(po))
+		return NULL;
 	return psyco_generic_call(po, cimpl, CfReturnRef|CfPyErrIfNull,
 				  "lv", NULL, vargs);
 }
@@ -514,16 +518,23 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 	    goto fail;
 	}
 		
+	PyTypeObject* tp = Psyco_NeedType(po, seq);
+	if (tp == NULL) {
+		goto fail;
+	}
+
 	if (tuplesize > 1) {
 	    result = PsycoTuple_GET_ITEM(vargs, 1);
 		if (result == NULL) {
 		    goto fail;
 		}
-		vinfo_incref(result);
 	}
-			
-	if (result != NULL && Psyco_VerifyType(po, result, &PyBaseString_Type)) {
-		goto fail;
+
+	if (result != NULL) {
+		tp = Psyco_NeedType(po, result);
+		if (tp == NULL || Psyco_VerifyType(po, result, &PyBaseString_Type)) {
+			goto fail;
+		}
 	}
 	
 	vinfo_t* index = psyco_vi_Zero();
@@ -532,16 +543,20 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 		item = PsycoSequence_GetItem(po, seq, index);
 		if (item == NULL) {
 			vinfo_t* matches = PycException_Matches(po, PyExc_IndexError);
+			PycException_Clear(po);
 			if (runtime_NON_NULL_t(po, matches) == true) {
-				PycException_Clear(po);
 			    break;
 			} else {
 				goto fail;
 			}
 		}
+		
+		tp = Psyco_NeedType(po, item);
+		if (tp == NULL) {
+			goto fail;
+		}
 	
 		temp = integer_add_i(po, index, 1, true);
-		vinfo_xdecref(index, po);
 		index = temp;
 		if (index == NULL) {
 		    goto fail;
@@ -551,8 +566,6 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 		    result = item;
 		} else {
 			temp = PsycoNumber_Add(po, result, item);
-			vinfo_xdecref(result, po);
-			vinfo_xdecref(item, po);
 			result = temp;
 			if (result == NULL) {
 				goto fail;
@@ -563,13 +576,17 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 	return result;
 
 fail:
-        return psyco_generic_call(po, cimpl_sum, CfReturnRef|CfPyErrIfNull,
-				  "lv", NULL, vargs);
+	if (PycException_Occurred(po)) {
+		return NULL;
+	}
+	return psyco_generic_call(po, cimpl_sum, CfReturnRef|CfPyErrIfNull,
+			  "lv", NULL, vargs);
 }
 
 
 static vinfo_t* pbuiltin_pow(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 {
+	vinfo_t* x;
 	vinfo_t* v;
 	vinfo_t* w;
 	vinfo_t* z;
@@ -588,13 +605,30 @@ static vinfo_t* pbuiltin_pow(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 		z = psyco_vi_None();
 	}
 	
-	vinfo_t* x = PsycoNumber_Power(po, v, w, z);
+	PyTypeObject* tp = Psyco_NeedType(po, v);
+	if (tp == NULL) {
+	    goto fail;
+	}
+	
+	tp = Psyco_NeedType(po, w);
+	if (tp == NULL) {
+		goto fail;
+	}
+	
+	tp = Psyco_NeedType(po, z);
+	if (tp == NULL) {
+		goto fail;
+	}
+	
+	x = PsycoNumber_Power(po, v, w, z);
 	
 	if (x != NULL) {
 	    return x;
 	}
 	
 fail:
+	if (PycException_Occurred(po))
+		return NULL;
 	return psyco_generic_call(po, cimpl_pow, CfReturnRef|CfPyErrIfNull,
 				  "lv", NULL, vargs);
 }
@@ -620,6 +654,8 @@ static vinfo_t* pbuiltin_iter(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 	}
 	
 fail:
+	if (PycException_Occurred(po))
+		return NULL;
 	return psyco_generic_call(po, cimpl_iter, CfReturnRef|CfPyErrIfNull,
 				  "lv", NULL, vargs);
 }
