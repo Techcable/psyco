@@ -533,6 +533,7 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 		if (item == NULL) {
 			vinfo_t* matches = PycException_Matches(po, PyExc_IndexError);
 			if (runtime_NON_NULL_t(po, matches) == true) {
+				PycException_Clear(po);
 			    break;
 			} else {
 				goto fail;
@@ -559,7 +560,6 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 		}
 	}
 
-	vinfo_incref(result);
 	return result;
 
 fail:
