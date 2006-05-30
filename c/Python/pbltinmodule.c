@@ -435,47 +435,102 @@ fail:
 }
 
 static vinfo_t* pbuiltin_min_max(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs, PyCFunction cimpl, int op) 
-{
-	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
-	
-	 // XXX: Support single argument to iter over
-	if (tuplesize == 1) {
-		goto fail;
-	}
-	
+{		
 	vinfo_t* item;
 	vinfo_t* maxitem = NULL;
 	vinfo_t* result;
+
+	int tuplesize = PsycoTuple_Load(vargs);  /* -1 if unknown */
 	
-	int i = 0;
-	while (i < tuplesize) {
-		item = PsycoTuple_GET_ITEM(vargs, i);
+	if (tuplesize == 1) {
 		
-		if (Psyco_VerifyType(po, item, &PyDict_Type)) {
+		vinfo_t* seq = PsycoTuple_GET_ITEM(vargs, 0);
+
+		PyTypeObject* tp = Psyco_NeedType(po, seq);
+		if (tp == NULL || !PsycoSequence_Check(tp)) {
 			goto fail;
 		}
+
+		vinfo_t* index = psyco_vi_Zero();
+		vinfo_t* temp;
 		
-		if (maxitem == NULL) {
-			maxitem = item;
-		} else {
-			result = PsycoObject_RichCompareBool(po, item, maxitem, op);
-			if (result == NULL) {
-			   goto fail;
-			}
-			   
-			switch (runtime_NON_NULL_f(po, result)) {
-				case true:
-					maxitem = item;
+		for(;;) {
+			item = PsycoSequence_GetItem(po, seq, index);
+			if (item == NULL) {
+				vinfo_t* matches = PycException_Matches(po, PyExc_IndexError);
+				PycException_Clear(po);
+				if (runtime_NON_NULL_t(po, matches) == true) {
 					break;
-				case false:
-					break;
-				default:
+				} else {
 					goto fail;
+				}
+			}
+			
+			// XXX: I would like Psyco_NeedType() here to promote?
+			tp = Psyco_KnownType(item);
+			if (tp == NULL) {
+				vinfo_xdecref(item, po);
+				goto fail;
+			}
+			
+			temp = integer_add_i(po, index, 1, true);
+			index = temp;
+			if (index == NULL) {
+				goto fail;
+			}
+				
+			if (maxitem == NULL) {
+				maxitem = item;
+			} else {
+				result = PsycoObject_RichCompareBool(po, item, maxitem, op);
+				if (result == NULL) {
+					goto fail;
+				}
+				
+				switch (runtime_NON_NULL_f(po, result)) {
+					case true:
+						maxitem = item;
+						break;
+					case false:
+						break;
+					default:
+						goto fail;
+				}
 			}
 		}
 		
-		i++;
-	
+	} else {
+			
+		int i = 0;
+		while (i < tuplesize) {
+			item = PsycoTuple_GET_ITEM(vargs, i);
+			
+			if (Psyco_VerifyType(po, item, &PyDict_Type)) {
+				goto fail;
+			}
+			
+			if (maxitem == NULL) {
+				maxitem = item;
+			} else {
+				result = PsycoObject_RichCompareBool(po, item, maxitem, op);
+				if (result == NULL) {
+				   goto fail;
+				}
+				   
+				switch (runtime_NON_NULL_f(po, result)) {
+					case true:
+						maxitem = item;
+						break;
+					case false:
+						break;
+					default:
+						goto fail;
+				}
+			}
+			
+			i++;
+		
+		}
 	}
 		
 	if (maxitem != NULL) {
@@ -519,7 +574,7 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 	}
 		
 	PyTypeObject* tp = Psyco_NeedType(po, seq);
-	if (tp == NULL) {
+	if (tp == NULL || !PsycoSequence_Check(tp)) {
 		goto fail;
 	}
 
@@ -551,8 +606,10 @@ static vinfo_t* pbuiltin_sum(PsycoObject* po, vinfo_t* vself, vinfo_t* vargs)
 			}
 		}
 		
-		tp = Psyco_NeedType(po, item);
+		// XXX: I would like Psyco_NeedType() here to promote?
+		tp = Psyco_KnownType(item);
 		if (tp == NULL) {
+			vinfo_xdecref(item, po);
 			goto fail;
 		}
 	
