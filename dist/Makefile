@@ -1,5 +1,5 @@
 
-version     = 1.5.1
+version     = 1.5.2
 checkedout  = ../../dist
 precompiled = ../../tag/compiled
 basename    = psyco-$(version)

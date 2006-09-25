@@ -11,6 +11,11 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+25 September 2006
+    Python 2.5 has been released.  The `subversion source@http://codespeak.net/svn/psyco/dist/` works fine with it.  Don't use the Psyco 1.5.1 release with Python 2.5: there has been a change in the way Python handles the new special method ``__index__()`` between the alpha/beta and the final release, which will probably crash any program using it.
+
+    Tagged the current Subversion head as `Psyco 1.5.2@http://sourceforge.net/project/showfiles.php?group_id=41036`.
+
 24 March 2006
     Bugfix release `Psyco 1.5.1@http://sourceforge.net/project/showfiles.php?group_id=41036`.  It fixes a memory leak with functions that contain local 'def' statements or lambdas.  The performance of creating instances of new-style classes has been improved.  It is also compatible with Python 2.5 (which at the moment is only a pair of alpha releases); please report further 2.5 problems as they show up.  Finally, as usual they are some fixes for rare bugs that nevertheless showed up in practice, so yes, of course I recommend upgrading Psyco :-)
 
