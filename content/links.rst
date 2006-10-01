@@ -11,7 +11,17 @@ Psyco is hosted on SourceForge. Go to the `SourceForge project page.@http://sour
 Related projects
 ================
 
-Among the related projects, Psyco's unique features are that it works on standard unmodified Python code, and never uses a C compiler.
+The direct sequel of Psyco is `PyPy@http://codespeak.net/pypy/`.  We are
+currently working on PyPy's JIT, which uses the same basic techniques as
+Psyco.  PyPy is a complete implementation of Python written in Python,
+and its JIT is going to be automatically generated from the interpreter,
+instead of being hand-written in C like Psyco.  This is my current
+focus; I will not develop Psyco any more, beyond basic maintenance as
+long as it's reasonable to do so.
+
+If you are looking for different kinds of projects that can speed up
+your programs, and if you are ready to make larger changes to your
+Python code, you might be interested in the following tools:
 
 - `Pyrex@http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/` lets you write code that mixes Python and C data types any way you want, and compiles it into a C extension for Python. This is a *compile-time* tool that uses programmer annotations in the Python source to produce a more efficient C version of your code, which you then compile with a regular C compiler.
 
@@ -29,3 +39,5 @@ Here are a couple of non-Pythonic dynamic compilation projects. I am often point
 - `GNU lightning@http://www.gnu.org/software/lightning/` is a simple library for dynamic code generation.
 
 - `Self@http://research.sun.com/self/` is a dynamic language for which quite some research has been done on optimization.
+
+- `LLVM@http://llvm.org/`, the "low-level virtual machine", defines its own assembler-like format and compiles it efficiently, either normally or just-in-time.

@@ -11,10 +11,16 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
-25 September 2006
-    Python 2.5 has been released.  The `subversion source@http://codespeak.net/svn/psyco/dist/` works fine with it.  Don't use the Psyco 1.5.1 release with Python 2.5: there has been a change in the way Python handles the new special method ``__index__()`` between the alpha/beta and the final release, which will probably crash any program using it.
+01 October 2006
 
-    Tagged the current Subversion head as `Psyco 1.5.2@http://sourceforge.net/project/showfiles.php?group_id=41036`.
+    More testing and debugging is needed.  Python 2.5 with Psyco is not
+    quite stable - but then, neither is Python 2.5 alone in my honest
+    opinion...  anyway, Psyco triggers a crash in one of Python's
+    regression tests about threading.  When it's ready I will bump the
+    Psyco version number (to 1.5.2 :-)
+
+25 September 2006
+    Python 2.5 has been released.  The `subversion source@http://codespeak.net/svn/psyco/dist/` works fine with it (XXX mostly).  Don't use the Psyco 1.5.1 release with Python 2.5: there has been a change in the way Python handles the new special method ``__index__()`` between the alpha/beta and the final release, which will probably crash any program using it.
 
 24 March 2006
     Bugfix release `Psyco 1.5.1@http://sourceforge.net/project/showfiles.php?group_id=41036`.  It fixes a memory leak with functions that contain local 'def' statements or lambdas.  The performance of creating instances of new-style classes has been improved.  It is also compatible with Python 2.5 (which at the moment is only a pair of alpha releases); please report further 2.5 problems as they show up.  Finally, as usual they are some fixes for rare bugs that nevertheless showed up in practice, so yes, of course I recommend upgrading Psyco :-)
@@ -106,16 +112,16 @@ News
 About
 =====
 
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------+
-| `<!--><A href="http://sourceforge.net"> <IMG src="http://sourceforge.net/sflogo.php?group_id=41036&amp;type=5" width="210" height="62" border="0" alt="SourceForge Logo"></A>` | `This site@http://psyco.sourceforge.net` has been last updated `$LASTUPDATED`.|
-|                                                                                                                                                                                +-------------------------------------------------------------------------------+
-|                                                                                                                                                                                | Download the whole site (pages and documents, not                             |
-|                                                                                                                                                                                | Psyco itself) in one click: `psyco-site.tar.gz` or                            |
-|                                                                                                                                                                                | `psyco-site.zip`.                                                             |
-|                                                                                                                                                                                +-------------------------------------------------------------------------------+
-|                                                                                                                                                                                | The site is built with customized                                             |
-|                                                                                                                                                                                | `reStructuredText@http://docutils.sourceforge.net/rst.html`                   |
-|                                                                                                                                                                                | mark-up and hosted on `SourceForge@http://sourceforge.net`.                   |
-+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------+
+| `<!-- --><A href="http://sourceforge.net"> <IMG src="http://sourceforge.net/sflogo.php?group_id=41036&amp;type=5" width="210" height="62" border="0" alt="SourceForge Logo"></A>` | `This site@http://psyco.sourceforge.net` has been last updated `$LASTUPDATED`.|
+|                                                                                                                                                                                   +-------------------------------------------------------------------------------+
+|                                                                                                                                                                                   | Download the whole site (pages and documents, not                             |
+|                                                                                                                                                                                   | Psyco itself) in one click: `psyco-site.tar.gz` or                            |
+|                                                                                                                                                                                   | `psyco-site.zip`.                                                             |
+|                                                                                                                                                                                   +-------------------------------------------------------------------------------+
+|                                                                                                                                                                                   | The site is built with customized                                             |
+|                                                                                                                                                                                   | `reStructuredText@http://docutils.sourceforge.net/rst.html`                   |
+|                                                                                                                                                                                   | mark-up and hosted on `SourceForge@http://sourceforge.net`.                   |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------+
 
-Write me: *arigo* @ *users.sourceforge.net*
+Contact me: *arigo* @ *users.sourceforge.net*

@@ -61,6 +61,7 @@ class HTMLTranslator(HTMLTranslatorBase):
   </TD>
 </TR>
 </TABLE>
+</DIV>
 ''')
             self.body.append(
 '''<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
@@ -127,6 +128,18 @@ class HTMLTranslator(HTMLTranslatorBase):
     def depart_title(self, node):
         self.body.append(self.context.pop())
         #self.TEXT_TO_HTML = self.context.pop()
+
+    def visit_section(self, node):
+        HTMLTranslatorBase.visit_section(self, node)
+        self.body.append('</DIV>\n\n')
+
+    def depart_section(self, node):
+        HTMLTranslatorBase.depart_section(self, node)
+        assert self.body[-1] == '</DIV>\n'
+        del self.body[-1]
+
+    def depart_document(self, node):
+        pass
 
     def build_contents(self):
         result = ['<P><CENTER><TABLE BORDER><TR>']
