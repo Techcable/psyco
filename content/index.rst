@@ -11,6 +11,13 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+03 October 2006
+
+    Fixed a problem about threads suddenly going into restricted mode.
+    I have no bugs left on my to-fix list; the current
+    `subversion head@http://codespeak.net/svn/psyco/dist/` seems
+    quite stable again.  Please report any issue :-)
+
 01 October 2006
 
     More testing and debugging is needed.  Python 2.5 with Psyco is not
