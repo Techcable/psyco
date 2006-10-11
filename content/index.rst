@@ -11,6 +11,14 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+11 October 2006
+
+    In case you're trying out Psyco on a new Mac OS/X using the Intel
+    processor, I said somewhere that it should "just work".  Well, chances
+    are that it would if someone would like to invest a little bit of time
+    fixing the following known issue:
+    http://mail.python.org/pipermail/pythonmac-sig/2006-June/017533.html
+
 03 October 2006
 
     Fixed a problem about threads suddenly going into restricted mode.
