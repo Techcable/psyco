@@ -1,6 +1,13 @@
 Download
 ********
 
+Snapshot of the sources
+=======================
+
+A snapshot of the latest sources is maintained at
+http://snake.cs.uni-duesseldorf.de/psyco/psyco-snapshot.tar.gz .
+See `installing from sources@psycoguide/sources.html`.
+
 Subversion access to the sources
 ================================
 
@@ -8,8 +15,8 @@ The source code of Psyco is hosted in a `Subversion@http://subversion.tigris.org
 
 It is recommended to install from Subversion instead of using the latest official release: the Subversion repository evolves very slowly and is completely stable.  Minor bug fixes don't go into a new official release.  See `installing from sources@psycoguide/sources.html`.
 
-Current version is 1.5.2
-========================
+Current version is 1.5.2 (not quite released yet!)
+==================================================
 
 You can `download Release 1.5.2@http://sourceforge.net/project/showfiles.php?group_id=41036`.  But if you can, it is recommended to install from source: see the documentation for how to install from `precompiled binaries@psycoguide/binaries.html` or `from sources@psycoguide/sources.html`.
 

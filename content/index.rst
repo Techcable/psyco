@@ -11,6 +11,14 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+12 October 2006
+
+    A snapshot of the latest sources is now maintained at
+    http://snake.cs.uni-duesseldorf.de/psyco/psyco-snapshot.tar.gz .
+    See `installing from sources@psycoguide/sources.html`.
+    Version 1.5.2 is not quite released yet, although the number 1.5.2
+    is already used on some web pages (just for confusion).
+
 11 October 2006
 
     In case you're trying out Psyco on a new Mac OS/X using the Intel
