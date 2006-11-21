@@ -22,15 +22,16 @@ win     = $(basename)-win
 all-src-files= $(shell cat               $(checkedout)/MANIFEST)
 test-files   = $(shell grep ^test/       $(checkedout)/MANIFEST)
 psyco-files  = $(shell grep ^py-support/ $(checkedout)/MANIFEST)
-doc-files    = $(shell cd $(checkedout) && make -C doc && echo doc/psycoguide/*)
+doc-files    = $(shell cd $(checkedout) && (make -C doc 1>&2) && echo doc/psycoguide/*)
 dist-files   = COPYING.txt $(psyco-files) $(test-files) $(doc-files)
 
 all: clean versioncheck docoutput \
      $(src).tar.gz            \
-     $(win)-2.4.zip           \
      $(linux)-2.3.tar.gz      \
      $(linux)-2.4.tar.gz      \
      $(linux)-2.5.tar.gz
+
+#     $(win)-2.4.zip
 
 
 FORCE:
