@@ -11,6 +11,11 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+27 November 2006
+
+    The Win32 binary installer seems to be broken :-(
+    Updates to follow...
+
 22 November 2006
 
     Got a Win32 binary for Python 2.5.  See
