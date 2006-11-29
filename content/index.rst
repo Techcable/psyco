@@ -11,6 +11,16 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+29 November 2006
+
+    Fixed the corrupted Win32 binary for Python 2.5.  See
+    `downloads@http://sourceforge.net/project/showfiles.php?group_id=41036`.
+    Thanks again to Jon Foster.  The corruption of binary files attached to 
+    SourceForge's patch tracker seems to be a known problem...
+    (Note that as far as I can tell, mirrors make take a little while
+    before they have got the updated version.  The correct version has an MD5
+    sum of 14194043a1488c7a33ad7f4ba7c2171c.)
+
 27 November 2006
 
     The Win32 binary installer seems to be broken :-(
