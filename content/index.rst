@@ -11,6 +11,12 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+8 December 2006
+
+    Got a Win32 binary for Python 2.4.  See
+    `downloads@http://sourceforge.net/project/showfiles.php?group_id=41036`.
+    Contributed by ffao.
+
 29 November 2006
 
     Fixed the corrupted Win32 binary for Python 2.5.  See
