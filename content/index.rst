@@ -11,6 +11,12 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+26 January 2007
+
+    Fixed a bug triggered by Python 2.5's bytecode optimizer.  Users of 2.5
+    should either avoid ``psyco.profile()`` or upgrade to the
+    `subversion head@http://codespeak.net/svn/psyco/dist/`.
+
 8 December 2006
 
     Got a Win32 binary for Python 2.4.  See
