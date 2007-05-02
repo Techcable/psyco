@@ -5,7 +5,7 @@ Snapshot of the sources
 =======================
 
 A snapshot of the latest sources is maintained at
-http://snake.cs.uni-duesseldorf.de/psyco/psyco-snapshot.tar.gz .
+http://wyvern.cs.uni-duesseldorf.de/psyco/psyco-snapshot.tar.gz .
 See `installing from sources@psycoguide/sources.html`.
 
 Subversion access to the sources

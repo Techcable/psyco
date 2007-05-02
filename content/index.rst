@@ -11,6 +11,13 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+2 May 2007
+
+    The *snake* machine is down - died of too much PyPy - so the
+    snapshot of the latest sources is now at
+    http://wyvern.cs.uni-duesseldorf.de/psyco/psyco-snapshot.tar.gz .
+    See `installing from sources@psycoguide/sources.html`.
+
 26 January 2007
 
     Fixed a bug triggered by Python 2.5's bytecode optimizer.  Users of 2.5
