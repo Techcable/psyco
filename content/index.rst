@@ -11,6 +11,12 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+26 September 2007
+
+    Psyco was ported to Intel Mac OS/X by Gary Grossman.  I will review and
+    check in his code; in the meantime the patch is available there:
+    http://codespeak.net/~arigo/psyco-mactel.diff
+
 2 May 2007
 
     The *snake* machine is down - died of too much PyPy - so the
