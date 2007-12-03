@@ -11,6 +11,10 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+SOON
+
+    Released `Psyco 1.6@http://sourceforge.net/project/showfiles.php?group_id=41036` with Intel MacOS/X support, thanks to Gary Grossman.  Also includes a couple of general bug fixes (Windows binaries: contribution welcome).  From this version onwards we no longer support Pythons older than 2.2.2.
+
 28 September 2007
     Sorry, the file at http://codespeak.net/~arigo/psyco-mactel.diff was
     missing for a while.  It's back now.

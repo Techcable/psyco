@@ -8,7 +8,7 @@ Current status: Psyco is already quite usable, and I consider is as stable.
 The Ultimate Psyco Guide
 ========================
 
-Documentation for Psyco release 1.5.2:
+Documentation for Psyco release 1.6:
 
 * `Browse as on-line HTML@psycoguide/index.html`
 * Download as a `gzipped Postscript@psycoguide.ps.gz` file
