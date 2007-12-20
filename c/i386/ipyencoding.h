@@ -101,9 +101,27 @@ PSY_INLINE void dictitem_update_nochange(void* originalmacrocode,
 
 /* emit the equivalent of the Py_INCREF() macro */
 /* the PyObject* is stored in the register 'rg' */
-/* XXX if Py_REF_DEBUG is set (Python debug mode), the
-       following will not properly update _Py_RefTotal.
-       Don't trust _Py_RefTotal with Psyco.     */
+/* if Py_REF_DEBUG is set (Python debug mode), the
+   following will properly update _Py_RefTotal.
+   You can trust _Py_RefTotal with Psyco.       */
+
+/* UPDATE_BEANCOUNTER does not try to be fast, but correct.
+   The point is debugging, not speed. For a release
+   build, this code vanishes competely.         */
+
+#ifdef Py_REF_DEBUG
+# define UPDATE_BEANCOUNTER(upflag)		do {    \
+  PUSH_CC_FLAGS();					\
+  code[0] = 0xFF;  /* INC [address] */                  \
+  code[1] = upflag ? 0x05 : (1<<3) | 0x05;              \
+  *(int**)(code+2) = &_Py_RefTotal;			\
+  code += 6;                                            \
+  POP_CC_FLAGS();					\
+ } while (0)
+#else
+# define UPDATE_BEANCOUNTER(upflag) 0
+#endif
+
 #define INC_OB_REFCNT(rg)			do {    \
   NEED_CC_REG(rg);                                      \
   INC_OB_REFCNT_internal(rg);                           \
@@ -116,6 +134,7 @@ PSY_INLINE void dictitem_update_nochange(void* originalmacrocode,
   if (_save_ccreg) POP_CC_FLAGS();                      \
 } while (0)
 #define INC_OB_REFCNT_internal(rg)		do {    \
+  UPDATE_BEANCOUNTER(true);				\
   code[0] = 0xFF;          /* INC [reg] */              \
   if ((EBP_IS_RESERVED || (rg) != REG_386_EBP) &&       \
       offsetof(PyObject, ob_refcnt) == 0)               \
@@ -135,6 +154,7 @@ PSY_INLINE void dictitem_update_nochange(void* originalmacrocode,
 
 /* Py_INCREF() for a compile-time-known 'pyobj' */
 #define INC_KNOWN_OB_REFCNT(pyobj)    do {              \
+  UPDATE_BEANCOUNTER(true);				\
   NEED_CC();                                            \
   code[0] = 0xFF;  /* INC [address] */                  \
   code[1] = 0x05;                                       \
@@ -144,6 +164,7 @@ PSY_INLINE void dictitem_update_nochange(void* originalmacrocode,
 
 /* Py_DECREF() for a compile-time 'pyobj' assuming counter cannot reach zero */
 #define DEC_KNOWN_OB_REFCNT_NZ(pyobj)    do {           \
+  UPDATE_BEANCOUNTER(false);				\
   NEED_CC();                                            \
   code[0] = 0xFF;  /* DEC [address] */                  \
   code[1] = (1<<3) | 0x05;                              \
@@ -153,6 +174,7 @@ PSY_INLINE void dictitem_update_nochange(void* originalmacrocode,
 
 /* like DEC_OB_REFCNT() but assume the reference counter cannot reach zero */
 #define DEC_OB_REFCNT_NZ(rg)    do {                    \
+  UPDATE_BEANCOUNTER(false);				\
   NEED_CC_REG(rg);                                      \
   code[0] = 0xFF;          /* DEC [reg] */              \
   if ((EBP_IS_RESERVED || (rg) != REG_386_EBP) &&       \
