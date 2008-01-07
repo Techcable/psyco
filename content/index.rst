@@ -11,6 +11,13 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+7 January 2007
+
+    Thanks Chaiwat Suttipongsakul for contributing a Win32 binary for
+    Python 2.5!  Get it from the
+    `downloads@http://sourceforge.net/project/showfiles.php?group_id=41036`
+    page.
+
 16 December 2007
 
     Released `Psyco 1.6@http://sourceforge.net/project/showfiles.php?group_id=41036` with Intel MacOS/X support, thanks to Gary Grossman.  Also includes a couple of general bug fixes (Windows binaries: contribution welcome).  From this version onwards we no longer support Pythons older than 2.2.2.
