@@ -27,7 +27,6 @@ dist-files   = COPYING.txt $(psyco-files) $(test-files) $(doc-files)
 
 all: clean versioncheck docoutput \
      $(src).tar.gz            \
-     $(linux)-2.3.tar.gz      \
      $(linux)-2.4.tar.gz      \
      $(linux)-2.5.tar.gz
 
