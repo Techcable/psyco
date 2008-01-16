@@ -11,7 +11,7 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
-7 January 2007
+7 January 2008
 
     Thanks Chaiwat Suttipongsakul for contributing a Win32 binary for
     Python 2.5!  Get it from the
