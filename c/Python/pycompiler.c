@@ -509,7 +509,8 @@ void psyco_virtualize_exception(PsycoObject* po)
 	extra_assert(exc != NULL);
 
 	vexc = vinfo_new(CompileTime_NewSk(sk_new((long) exc, SkFlagPyObj)));
-	vval = vinfo_new(CompileTime_NewSk(sk_new((long) val, SkFlagPyObj)));
+	vval = val == NULL ? NULL :
+	       vinfo_new(CompileTime_NewSk(sk_new((long) val, SkFlagPyObj)));
 	vtb  = tb == NULL ? NULL :
 	       vinfo_new(CompileTime_NewSk(sk_new((long) tb,  SkFlagPyObj)));
 	PycException_Restore(po, vexc, vval, vtb);
