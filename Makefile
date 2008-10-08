@@ -39,7 +39,8 @@ clean: FORCE
 	-rm -fr htdocs/*
 
 sf: $(all-htdocs-files)
-	rsync -r --rsh=ssh --delete -z htdocs arigo@shell.sourceforge.net:/home/groups/p/ps/psyco
+	cat /home/arigo/octogone/locked/sourceforge
+	rsync -r --rsh=ssh --delete -z htdocs arigo,psyco@web.sourceforge.net:/home/groups/p/ps/psyco
 	touch $@
 
 htdocs:

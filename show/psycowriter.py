@@ -15,6 +15,10 @@ CONTENTS = [
 FOOTER = '''<A href="http://sourceforge.net"> <IMG src="http://sourceforge.net/sflogo.php?group_id=41036&amp;type=5" width="210" height="62" border="0" alt="SourceForge Logo"></A>
 '''
 
+CUSTOM_HACK_HTML = '''
+<div style="visibility:hidden" blame="easy_install"> <a href="http://wyvern.cs.uni-duesseldorf.de/psyco/psyco-snapshot.tar.gz">psyco snapshot</a> </div>
+'''
+
 
 class HTMLTranslator(HTMLTranslatorBase):
     TDOpen = (
@@ -33,6 +37,7 @@ class HTMLTranslator(HTMLTranslatorBase):
         HTMLTranslatorBase.__init__(self, doctree)
         self.title = title
         self.body = ['</HEAD>\n<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">\n']
+        self.body.append(CUSTOM_HACK_HTML)
         if not self.title:
             self.foot.insert(0, FOOTER)
 
