@@ -10,6 +10,12 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+20 January 2009
+
+    Michael Foord contributed a Windows binary for Python 2.6 (as well as
+    Psyco 1.5.1 binaries for Python 2.2 and 2.3).  Get them
+    `directly from voidspace.org.uk.@http://www.voidspace.org.uk/python/modules.shtml#psyco`
+
 7 January 2008
 
     Thanks Chaiwat Suttipongsakul for contributing a Win32 binary for
