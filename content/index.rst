@@ -4,7 +4,7 @@ Home Page
 High-level languages need not be slower than low-level ones.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Psyco** is a Python extension module which can massively speed up the execution of any Python code.
+**Psyco** is a Python extension module which can greatly speed up the execution of any Python code.
 
 
 News
