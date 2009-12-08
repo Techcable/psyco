@@ -10,6 +10,14 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+8 December 2009
+
+    Just for reference, Psyco does not work on any 64-bit systems at all.
+    This fact is worth being noted again, now that the latest Mac OS/X
+    10.6 "Snow Leopart" comes with a default Python that is 64-bit on
+    64-bit machines.  The only way to use Psyco on OS/X 10.6 is by
+    recompiling a custom Python in 32-bit mode.
+
 20 January 2009
 
     Michael Foord contributed a Windows binary for Python 2.6 (as well as
