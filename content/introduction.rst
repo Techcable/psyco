@@ -27,7 +27,7 @@ The actual performance gains can be very large. For common code, expect at least
 
 Because of the nature of Psyco, it is difficult to forecast the actual performance gains for a given program. Just try and see.
 
-The memory overhead of Psyco is currently large. I has been reduced a bit over time, but it is still an overhead. This overhead is proportional to the amount of Python code that Psyco rewrites; thus if your application has a few algorithmic "core" functions, these are the ones you will want Psyco to accelerate --- not the whole program.
+The memory overhead of Psyco is currently large. It has been reduced a bit over time, but it is still an overhead. This overhead is proportional to the amount of Python code that Psyco rewrites; thus if your application has a few algorithmic "core" functions, these are the ones you will want Psyco to accelerate --- not the whole program.
 
 Psyco can transparently use a Python profiler to automatically select which functions it is interesting to accelerate.
 
