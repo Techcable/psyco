@@ -10,6 +10,14 @@ High-level languages need not be slower than low-level ones.
 News
 ====
 
+4 March 2010
+
+    On Mac OS/X "Snow Leopart" you don't actually need to recompile
+    Python yourself, but just use the following command line
+    (thanks Elvis Pfützenreuter)::
+
+        defaults write com.apple.versioner.python Prefer-32-Bit -bool yes
+
 8 December 2009
 
     Just for reference, Psyco does not work on any 64-bit systems at all.
