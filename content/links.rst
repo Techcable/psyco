@@ -25,7 +25,7 @@ Python code, you might be interested in the following tools:
 
 - `Pyrex@http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/` lets you write code that mixes Python and C data types any way you want, and compiles it into a C extension for Python. This is a *compile-time* tool that uses programmer annotations in the Python source to produce a more efficient C version of your code, which you then compile with a regular C compiler.
 
-- `Weave@http://www.scipy.org/site_content/weave/` is a tool for inline C/C++ in Python. The basic functionality lets you write C or C++ code in the middle of your Python program. It calls (and thus requires) a C/C++ compiler at run-time. On top of this you will also find functions that directly accept Python Numeric expression, or that build a regular C extension module for static compilation.
+- `Weave@http://www.scipy.org/Weave` is a tool for inline C/C++ in Python. The basic functionality lets you write C or C++ code in the middle of your Python program. It calls (and thus requires) a C/C++ compiler at run-time. On top of this you will also find functions that directly accept Python Numeric expression, or that build a regular C extension module for static compilation.
 
 Dynamic compiler back-ends
 ==========================
