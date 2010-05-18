@@ -24,7 +24,9 @@ News
     This fact is worth being noted again, now that the latest Mac OS/X
     10.6 "Snow Leopart" comes with a default Python that is 64-bit on
     64-bit machines.  The only way to use Psyco on OS/X 10.6 is by
-    recompiling a custom Python in 32-bit mode.
+    recompiling a custom Python in 32-bit mode (on Linux, see
+    `here@http://bruynooghe.blogspot.com/2009/02/compiling-32-bit-python-on-amd64.html`
+    or `here@http://pypy.org/download.html#here-are-hints` for example).
 
 20 January 2009
 
