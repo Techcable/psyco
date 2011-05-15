@@ -1,0 +1,23 @@
+#recursive-subtargets = $(wildcard */Makefile)
+recursive-subtargets = content/Makefile
+python = python
+tools = tools
+export PYTHONPATH := $(tools):$(PYTHONPATH)
+
+
+all-recursive: $(recursive-subtargets) all
+
+%/Makefile: FORCE
+	$(MAKE) -C $*
+
+all: FORCE
+FORCE:
+.DELETE_ON_ERROR:
+
+%.html: %.rst
+	$(python) $(tools)/rst.py -o $@ $<
+
+%.gz: %
+	gzip -9 -c $< > $@
+
+-include Makefile.local
