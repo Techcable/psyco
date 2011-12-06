@@ -1941,14 +1941,6 @@ code_t* psyco_pycompiler_mainloop(PsycoObject* po)
     psyco_emit_header(po, 3);
   }
 
-#if HAVE_NEXT_INSTR_POP
-  if (po->pr.next_instr < -1) {
-    /* there is a pending POP operation to be done */
-    POP_DECREF();
-    po->pr.next_instr &= ~NEXT_INSTR_POP;
-  }
-#endif
-
   while (po->pr.next_instr != -1)
     {
       /* 'co' is the code object we are interpreting/compiling */
@@ -2873,7 +2865,7 @@ code_t* psyco_pycompiler_mainloop(PsycoObject* po)
 		mp = psyco_next_merge_point(po->pr.merge_points, next_instr);
 		goto fine;
 
-#if HAVE_NEXT_INSTR_POP   /* Python >= 2.7 */
+#ifdef JUMP_IF_FALSE_OR_POP
 	case JUMP_IF_TRUE_OR_POP:
 	case JUMP_IF_FALSE_OR_POP:
 	case POP_JUMP_IF_FALSE:
@@ -2890,7 +2882,7 @@ code_t* psyco_pycompiler_mainloop(PsycoObject* po)
 		cc = integer_NON_NULL(po, PsycoObject_IsTrue(po, TOP()));
 		if (cc == CC_ERROR)
 			break;
-#if HAVE_NEXT_INSTR_POP
+#ifdef JUMP_IF_FALSE_OR_POP
 		if (opcode == JUMP_IF_FALSE_OR_POP ||
 		    opcode == POP_JUMP_IF_FALSE)
 #else
@@ -2900,7 +2892,7 @@ code_t* psyco_pycompiler_mainloop(PsycoObject* po)
 		if ((int)cc < CC_TOTAL) {
 			/* compile the beginning of the "if true" path */
 			int current_instr = next_instr;
-#if HAVE_NEXT_INSTR_POP
+#ifdef JUMP_IF_FALSE_OR_POP
 			JUMPTO(oparg);
 			/* this is the case where we jump */
 			if (opcode == POP_JUMP_IF_FALSE ||
