@@ -10,6 +10,12 @@ Psyco is a Python extension module which can massively speed up the
 execution of any Python code.
 
 
+DEPRECATION WARNING
+-------------------
+
+**This is old code!  It only works with Python <= 2.6 on 32-bit Intel x86.  Please see PyPy as a modern alternative.**
+
+
 REQUIREMENTS
 ------------
 
